@@ -53,23 +53,23 @@ public class MainWindow extends javax.swing.JFrame {
                 buttonBoard[j][(N-1-i)] = b;
             }
         }
-        jButton1.setName("");
-        jButton1.setActionCommand("");
-        jButton1.setIcon(imageEmpty);
-        jButton1.setEnabled(false);
-        jButton1.setDisabledIcon(imageWhite);
+        jButton1.setActionCommand("pass");
+        jButton1.setIcon(imageWhite);
+        jButton1.addActionListener(controller);
         
         
         jButton2.setIcon(new javax.swing.ImageIcon(
-                getClass().getResource("/res//white_large.jpg")));jButton2.setEnabled(false);
+                getClass().getResource("/res//white_large.jpg")));
+        jButton2.setEnabled(false);
         jButton2.setDisabledIcon(new javax.swing.ImageIcon(
                 getClass().getResource("/res//white_large.jpg")));
         
-        
         jButton3.setIcon(new javax.swing.ImageIcon(
-                getClass().getResource("/res//black_large.jpg")));jButton3.setEnabled(false);
+                getClass().getResource("/res//black_large.jpg")));
+        jButton3.setEnabled(false);
         jButton3.setDisabledIcon(new javax.swing.ImageIcon(
                 getClass().getResource("/res//black_large.jpg")));
+        
         jLabel2.setText("2");
         jLabel3.setText("2");
         setVisible(true);
@@ -172,9 +172,9 @@ public class MainWindow extends javax.swing.JFrame {
                     .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel2))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -256,9 +256,9 @@ public class MainWindow extends javax.swing.JFrame {
     }
     public void updatePlayer(boolean isWhite){
         if(isWhite){
-            jButton1.setDisabledIcon(imageWhite);
+            jButton1.setIcon(imageWhite);
         } else {         
-            jButton1.setDisabledIcon(imageBlack);
+            jButton1.setIcon(imageBlack);
         }
     }
     public void updatePossibleMoves(List<Disc> posssibleMoves){
@@ -319,9 +319,12 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     // End of variables declaration//GEN-END:variables
 
-    private Action setClickedButton(JButton b) {
-        clicked = b;
-        return null;
+    public void switchImage() {
+        if(jButton1.getIcon() == imageWhite){
+            jButton1.setIcon(imageBlack);
+        } else {
+            jButton1.setIcon(imageWhite);
+        }
     }
     public JButton getClickedButton(){
         return clicked;

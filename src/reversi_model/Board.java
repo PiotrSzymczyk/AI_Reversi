@@ -154,10 +154,6 @@ public class Board {
         for (Direction direction : directions) {
             // get next piece's index along the direction
             if(checkIfCapturePossibleInDirection(next(d,direction), direction, d.isWhite)) {
-                if(d.x == 6 && d.y == 4){
-                    Disc tmp = next(d,direction);
-                    System.out.println("BUG2 " +direction + " :" + (tmp == null? "dupa":(tmp.x +", "+ tmp.y+ " - " +(tmp.isWhite?'w':'b'))));
-        }
                 return true;
             }
         }
@@ -218,5 +214,9 @@ public class Board {
             }
         }
         return res;
+    }
+    public boolean manuallySwitchPlayer(){
+        isWhiteTurn = ! isWhiteTurn;
+        return isWhiteTurn;
     }
 }
