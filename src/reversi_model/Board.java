@@ -21,6 +21,19 @@ public class Board {
     public Board(){
         initializeBoard();
     }
+    public Board(Board currState, Disc newDisc){
+        boardState = new Disc[SIZE][SIZE];
+        discs = new ArrayList<>();
+        
+        for(Disc d : currState.discs){
+            boardState[d.x][d.y] = new Disc(d);
+            discs.add(boardState[d.x][d.y]);
+        }
+        
+        boardState[newDisc.x][newDisc.y] = newDisc;
+        discs.add(newDisc);
+    }
+    
 
     private void initializeBoard() {
         boardState = new Disc[SIZE][SIZE];

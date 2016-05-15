@@ -20,6 +20,11 @@ public class Disc {
     public Disc(){
         this(-1, -1, true);
     }
+    public Disc(Disc d){
+        this.x = d.x;
+        this.y = d.y;
+        this.isWhite = d.isWhite;
+    }
     public int row(){
         return y;
     }
