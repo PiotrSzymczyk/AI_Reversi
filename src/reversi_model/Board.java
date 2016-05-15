@@ -208,4 +208,15 @@ public class Board {
     public boolean isWhiteTurn() {
         return isWhiteTurn;
     }
+    public int[] getPoints(){
+        int[] res = new int[2];
+        for(Disc disc : discs){
+            if(disc.isWhite){
+                res[0] += 1;
+            } else{
+                res[1] += 1;
+            }
+        }
+        return res;
+    }
 }

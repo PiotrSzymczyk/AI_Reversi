@@ -55,6 +55,7 @@ public class Reversi implements ActionListener {
                 v.updateBoard(m.getDiscs());
                 v.updatePlayer(m.isWhiteTurn()); 
                 v.updatePossibleMoves(m.getPossibleMoves());
+                v.updatePoints(m.getPoints());
                 break;
         }
     }
