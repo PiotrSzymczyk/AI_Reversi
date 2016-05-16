@@ -37,4 +37,13 @@ public class Disc {
     public void flip(){
         isWhite = !isWhite;
     }
+    public String toString(){
+        return "x = " + x + ", y = " + y + ", color: " + (isWhite?"w":"b");
+    }
+    public String shortStr(){
+        return "[" + x + ", " + y + "]" + (isWhite?"w":"b");
+    }
+    public boolean equals(Disc other){
+        return x == other.x && y == other.y && isWhite == other.isWhite;
+    }
 }

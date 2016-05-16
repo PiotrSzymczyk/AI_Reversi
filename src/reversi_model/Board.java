@@ -6,7 +6,9 @@
 package reversi_model;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import reversi_AI.GameTree;
 
 /**
  *
@@ -15,13 +17,15 @@ import java.util.List;
 public class Board {
     static final int SIZE = 8;  
     Disc[][] boardState;
-    boolean isWhiteTurn = true;
+    boolean isWhiteTurn;
     List<Disc> discs;
     
     public Board(){
+        isWhiteTurn = true;
         initializeBoard();
     }
-    public Board(Board currState, Disc newDisc){
+    public Board(Board currState, Disc newDisc, boolean isWhiteTurn){
+        this.isWhiteTurn = isWhiteTurn;
         boardState = new Disc[SIZE][SIZE];
         discs = new ArrayList<>();
         
@@ -30,8 +34,7 @@ public class Board {
             discs.add(boardState[d.x][d.y]);
         }
         
-        boardState[newDisc.x][newDisc.y] = newDisc;
-        discs.add(newDisc);
+        addDisc(newDisc);
     }
     
 
@@ -53,6 +56,15 @@ public class Board {
         Disc newDisc = new Disc(x, y, isWhiteTurn);
         isWhiteTurn = !isWhiteTurn;
         boardState[x][y] = newDisc;
+        discs.add(newDisc);
+        makeCaptures(newDisc);
+        return true;
+    }
+    public boolean addDisc(Disc d){
+        if(boardState[d.x][d.y] != null) return false;
+        Disc newDisc = new Disc(d.x, d.y, isWhiteTurn);
+        isWhiteTurn = !isWhiteTurn;
+        boardState[d.x][d.y] = newDisc;
         discs.add(newDisc);
         makeCaptures(newDisc);
         return true;
@@ -126,38 +138,60 @@ public class Board {
     public void addAdjacentIfAvailable(List<Disc> available, Disc d, Direction direction) {
         switch (direction) {
             case UP:
-                if(isValidCoor(d.x, d.y+1) && boardState[d.x][d.y+1] == null &&
-                        checkIfCaptureAvailable(d.x, d.y+1)) available.add(new Disc(d.x, d.y+1,false)); 
+                if(isValidCoor(d.x, d.y+1) && boardState[d.x][d.y+1] == null 
+                        && checkIfCaptureAvailable(d.x, d.y+1) 
+                        && !contains(available, new Disc(d.x, d.y+1,isWhiteTurn))) 
+                    available.add(new Disc(d.x, d.y+1,isWhiteTurn)); 
                 break;
             case UP_RIGHT:
-                if(isValidCoor(d.x+1, d.y+1) && boardState[d.x+1][d.y+1] == null && 
-                        checkIfCaptureAvailable(d.x+1, d.y+1)) available.add(new Disc(d.x+1, d.y+1,false));
+                if(isValidCoor(d.x+1, d.y+1) && boardState[d.x+1][d.y+1] == null 
+                        && checkIfCaptureAvailable(d.x+1, d.y+1)
+                        && !contains(available, new Disc(d.x+1, d.y+1,isWhiteTurn))) 
+                    available.add(new Disc(d.x+1, d.y+1,isWhiteTurn));
                 break;
             case RIGHT:
                 if(isValidCoor(d.x+1, d.y) && boardState[d.x+1][d.y] == null &&
-                        checkIfCaptureAvailable(d.x+1, d.y) ) available.add(new Disc(d.x+1, d.y,false));
+                        checkIfCaptureAvailable(d.x+1, d.y) 
+                        && !contains(available, new Disc(d.x+1, d.y,isWhiteTurn)))
+                    available.add(new Disc(d.x+1, d.y,isWhiteTurn));
                 break;
             case BOTTOM_RIGHT:
                 if(isValidCoor(d.x+1, d.y-1) && boardState[d.x+1][d.y-1] == null &&
-                        checkIfCaptureAvailable(d.x+1, d.y-1) ) available.add(new Disc(d.x+1, d.y-1,false));
+                        checkIfCaptureAvailable(d.x+1, d.y-1) 
+                        && !contains(available, new Disc(d.x+1, d.y-1,isWhiteTurn)))
+                    available.add(new Disc(d.x+1, d.y-1,isWhiteTurn));
                 break;
             case BOTTOM:
                 if(isValidCoor(d.x, d.y-1) && boardState[d.x][d.y-1] == null &&
-                        checkIfCaptureAvailable(d.x, d.y-1) ) available.add(new Disc(d.x, d.y-1,false));
+                        checkIfCaptureAvailable(d.x, d.y-1) 
+                        && !contains(available, new Disc(d.x, d.y-1,isWhiteTurn)))
+                    available.add(new Disc(d.x, d.y-1,isWhiteTurn));
                 break;
             case BOTTOM_LEFT:
                 if(isValidCoor(d.x-1, d.y-1) && boardState[d.x-1][d.y-1] == null &&
-                        checkIfCaptureAvailable(d.x-1, d.y-1) ) available.add(new Disc(d.x-1, d.y-1,false));
+                        checkIfCaptureAvailable(d.x-1, d.y-1) 
+                        && !contains(available, new Disc(d.x-1, d.y-1,isWhiteTurn)))
+                    available.add(new Disc(d.x-1, d.y-1,isWhiteTurn));
                 break;
             case LEFT:
                 if(isValidCoor(d.x-1, d.y) && boardState[d.x-1][d.y] == null &&
-                        checkIfCaptureAvailable(d.x-1, d.y) ) available.add(new Disc(d.x-1, d.y,false));
+                        checkIfCaptureAvailable(d.x-1, d.y) 
+                        && !contains(available, new Disc(d.x-1, d.y,isWhiteTurn)))
+                    available.add(new Disc(d.x-1, d.y,isWhiteTurn));
                 break;
             case UP_LEFT:
                 if(isValidCoor(d.x-1, d.y+1) && boardState[d.x-1][d.y+1] == null &&
-                        checkIfCaptureAvailable(d.x-1, d.y+1) ) available.add(new Disc(d.x-1, d.y+1,false));
+                        checkIfCaptureAvailable(d.x-1, d.y+1) 
+                        && !contains(available, new Disc(d.x-1, d.y+1,isWhiteTurn)))
+                    available.add(new Disc(d.x-1, d.y+1,isWhiteTurn));
                 break;
         }
+    }
+    public boolean contains(List<Disc> ls, Disc d){
+        for(Disc disc : ls){
+            if(disc.x == d.x && disc.y == d.y) return true;
+        }
+        return false;
     }
     
     public boolean checkIfCaptureAvailable(int x, int y) {
@@ -231,5 +265,91 @@ public class Board {
     public boolean manuallySwitchPlayer(){
         isWhiteTurn = ! isWhiteTurn;
         return isWhiteTurn;
+    }
+    public double evaluate(boolean isWhiteEvaluated){
+        return eavaluateUsingFieldValues(isWhiteEvaluated) 
+                + evaluateUsingDiscNumber(isWhiteEvaluated) 
+                +evaluateUsingMobility(isWhiteEvaluated);
+    }
+    public int eavaluateUsingFieldValues(boolean isWhiteEvaluated){
+        int whiteScore = 0, blackScore = 0;
+        for(Disc d : discs){
+            if(d.isWhite ) {
+                whiteScore += fieldValues[d.x][d.y];
+            } else{
+                blackScore += fieldValues[d.x][d.y];
+            }
+        } 
+        return isWhiteEvaluated ? (whiteScore - blackScore) / (whiteScore + blackScore) 
+                : (blackScore - whiteScore) / (whiteScore + blackScore);
+    }
+    public int evaluateUsingDiscNumber(boolean isWhiteEvaluated){
+        int whiteCount = 0, blackCount = 0; 
+        for(Disc d : discs){
+            if(d.isWhite) {
+                whiteCount++;
+            } else {
+                blackCount++;
+            }
+        } 
+        return isWhiteEvaluated ? (whiteCount - blackCount) / (whiteCount + blackCount)
+                : (blackCount - whiteCount) / (whiteCount + blackCount);
+    }
+    public int evaluateUsingMobility(boolean isWhiteEvaluated){
+        int whiteMobility, blackMobility;
+        if(isWhiteTurn){
+            whiteMobility = getPossibleMoves().size();
+            isWhiteTurn = ! isWhiteTurn;
+            blackMobility = getPossibleMoves().size(); 
+            isWhiteTurn = ! isWhiteTurn;
+        } else {            
+            blackMobility = getPossibleMoves().size(); 
+            isWhiteTurn = ! isWhiteTurn;
+            whiteMobility = getPossibleMoves().size();
+            isWhiteTurn = ! isWhiteTurn;
+        }
+        return isWhiteEvaluated ? (whiteMobility - blackMobility) / (whiteMobility + blackMobility)
+                : (blackMobility - whiteMobility) / (whiteMobility + blackMobility);
+    }
+    public static int[][] fieldValues = { 
+        {200, -8,  8,  6,  6,  8,  -8,  200}, 
+        {-8, -24, -4, -3, -3, -4, -24, -8},
+        {8,  -4,  7,  4,  4,  7,  -4,  8}, 
+        {6,  -3,  4,  0,  0,  4,  -3,  6}, 
+        {6,  -3,  4,  0,  0,  4,  -3,  6}, 
+        {8,  -4,  7,  4,  4,  7,  -4,  8}, 
+        {-8, -24, -4, -3, -3, -4, -24, -8},
+        {200, -8,  8,  6,  6,  8,  -8,  200}};
+    // Doesn't work :(
+    public Disc substract(Board b){        
+        List<Disc> tmpDiscs = new ArrayList<>();
+        
+        for(Disc d : discs){
+            tmpDiscs.add(new Disc(d));
+        }
+        
+        Iterator<Disc> it = tmpDiscs.iterator();
+            while (it.hasNext()) {
+                Disc curr = it.next();
+                if(contains(b.discs,curr)) it.remove();
+            }
+        return tmpDiscs.get(0);
+        
+    }
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        for(Disc d : discs)
+            sb.append(d + " | ");
+        sb.append(eavaluateUsingFieldValues(false));
+        return sb.toString();
+        //return "score: " + eavaluateUsingFieldValues(false);
+    }
+    
+    public boolean equals(Board other){
+        if(discs.size() != other.discs.size()) return false;
+        for(int i = 0; i < discs.size(); i++ ){
+            if(!discs.get(i).equals(other.discs.get(i))) return false;
+        }
+        return true;
     }
 }
