@@ -25,17 +25,19 @@ public class PlayerAI {
         searchDepth = depth;
         gt.setHeur(heur);
         gt.buildTree();
-        
+        /*
         System.out.println("Nowe drzewo:");
         gt.traversePreOrder(gt.getRoot(), "");
+            */
     }
     
     public void updatePlayerMove(Board b){        
         gt = new GameTree(b, searchDepth);
         gt.buildTree();
+        /*
         System.out.println("Nowe drzewo:");
         gt.traversePreOrder(gt.getRoot(), "");
-        
+        */
     }
     public void setHeur(String heur){
         gt.setHeur(heur);
@@ -71,6 +73,7 @@ public class PlayerAI {
         
         Node bestMove = new Node();
         bestMove.setNullScore();
+        if(states.size() == 0) states.addAll(gt.getRoot().getChildren());
         for(Node s : states){
             s.setMaxScore();
             if(s.getScore() >= bestMove.getScore()) bestMove = s;

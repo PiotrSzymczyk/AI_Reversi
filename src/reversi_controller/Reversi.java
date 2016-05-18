@@ -60,6 +60,15 @@ public class Reversi implements ActionListener {
                         moveAI();
                         break;
                 }
+            case 5:
+                if(e.getActionCommand() == "reset"){
+                    m = new Board();
+                    v.dropBoard();
+                    v.updateBoard(m.getDiscs());
+                    v.updatePlayer(m.isWhiteTurn()); 
+                    v.updatePossibleMoves(m.getPossibleMoves());
+                    v.updatePoints(m.getPoints());
+                }
         }
     }
     public void moveAI(){

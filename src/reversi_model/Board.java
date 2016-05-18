@@ -266,13 +266,15 @@ public class Board {
         isWhiteTurn = ! isWhiteTurn;
         return isWhiteTurn;
     }
+    
     public double evaluate(boolean isWhiteEvaluated){
-        return eavaluateUsingFieldValues(isWhiteEvaluated) 
+        if(endGame()) return evaluateUsingDiscNumber(isWhiteEvaluated) * Integer.MAX_VALUE;
+        return evaluateUsingFieldValues(isWhiteEvaluated) * 10 
                 + evaluateUsingDiscNumber(isWhiteEvaluated) 
-                +evaluateUsingMobility(isWhiteEvaluated);
+                + evaluateUsingMobility(isWhiteEvaluated);
     }
-    public int eavaluateUsingFieldValues(boolean isWhiteEvaluated){
-        int whiteScore = 0, blackScore = 0;
+    public double evaluateUsingFieldValues(boolean isWhiteEvaluated){
+        double whiteScore = 0, blackScore = 0;
         for(Disc d : discs){
             if(d.isWhite ) {
                 whiteScore += fieldValues[d.x][d.y];
@@ -283,8 +285,8 @@ public class Board {
         return isWhiteEvaluated ? (whiteScore - blackScore) / (whiteScore + blackScore) 
                 : (blackScore - whiteScore) / (whiteScore + blackScore);
     }
-    public int evaluateUsingDiscNumber(boolean isWhiteEvaluated){
-        int whiteCount = 0, blackCount = 0; 
+    public double evaluateUsingDiscNumber(boolean isWhiteEvaluated){
+        double whiteCount = 0, blackCount = 0; 
         for(Disc d : discs){
             if(d.isWhite) {
                 whiteCount++;
@@ -295,8 +297,8 @@ public class Board {
         return isWhiteEvaluated ? (whiteCount - blackCount) / (whiteCount + blackCount)
                 : (blackCount - whiteCount) / (whiteCount + blackCount);
     }
-    public int evaluateUsingMobility(boolean isWhiteEvaluated){
-        int whiteMobility, blackMobility;
+    public double evaluateUsingMobility(boolean isWhiteEvaluated){
+        double whiteMobility, blackMobility;
         if(isWhiteTurn){
             whiteMobility = getPossibleMoves().size();
             isWhiteTurn = ! isWhiteTurn;
@@ -312,14 +314,14 @@ public class Board {
                 : (blackMobility - whiteMobility) / (whiteMobility + blackMobility);
     }
     public static int[][] fieldValues = { 
-        {200, -8,  8,  6,  6,  8,  -8,  200}, 
+        {99, -8,  8,  6,  6,  8,  -8,  99}, 
         {-8, -24, -4, -3, -3, -4, -24, -8},
         {8,  -4,  7,  4,  4,  7,  -4,  8}, 
         {6,  -3,  4,  0,  0,  4,  -3,  6}, 
         {6,  -3,  4,  0,  0,  4,  -3,  6}, 
         {8,  -4,  7,  4,  4,  7,  -4,  8}, 
         {-8, -24, -4, -3, -3, -4, -24, -8},
-        {200, -8,  8,  6,  6,  8,  -8,  200}};
+        {99, -8,  8,  6,  6,  8,  -8,  99}};
     // Doesn't work :(
     public Disc substract(Board b){        
         List<Disc> tmpDiscs = new ArrayList<>();
@@ -340,7 +342,7 @@ public class Board {
         StringBuilder sb = new StringBuilder();
         for(Disc d : discs)
             sb.append(d + " | ");
-        sb.append(eavaluateUsingFieldValues(false));
+        sb.append(evaluateUsingFieldValues(false));
         return sb.toString();
         //return "score: " + eavaluateUsingFieldValues(false);
     }
@@ -351,5 +353,9 @@ public class Board {
             if(!discs.get(i).equals(other.discs.get(i))) return false;
         }
         return true;
+    }
+
+    private boolean endGame() {
+        return discs.size() > 60;
     }
 }
